@@ -10,7 +10,7 @@ balanceOpen = balanceClose = 0.00
 filename = 'testFiles/Butterfield.csv'
 headerAt = 3
 isDebug = False
-isPrintDetails = True
+isPrintDetails = False
 lineCount = 1
 
 print("\n--------------------\nhello world\n") if isDebug else None
@@ -37,8 +37,9 @@ records.insert(loc=0, column='Account', value=accountNum)
 records.insert(loc=1, column='Card', value=accountNum)
 records['Card'] = records.Description.apply(lambda x: (re.search(r'\d{4}', x)).group(0) if re.search(r'\d{4}', x) else None)
 
-# Categorize Records
-records['Category'] = records.Description.apply(lambda x: [v for k, v in cat.items() if re.search(k, x.upper())]).explode()
+# convert date formats
+records['Transaction Date'] = pd.to_datetime(records['Transaction Date'], format='%d %b %Y')
+records['Value Date'] = pd.to_datetime(records['Value Date'], format='%d %b %Y')
 
 # Add Amount Column 
 # My Budget app does support negative and positive value columns
@@ -46,6 +47,9 @@ records['Category'] = records.Description.apply(lambda x: [v for k, v in cat.ite
 # Sets Amount = Debit * -1 unless it's NaN, then it sets Credit
 records.insert(loc=7, column='Amount', value=accountNum)
 records['Amount'] = (records['Debit'] * -1.00).fillna(records['Credit'])
+
+# Categorize Records
+records['Category'] = records.Description.apply(lambda x: [v for k, v in cat.items() if re.search(k, x.upper())]).explode()
 
 # noExt = re.match(r'\S*(?=.csv)',filename)
 records.to_csv( (re.match(r'\S*(?=.csv)',filename)).group(0) + '-output' + (re.search(r'\.\w+',filename)).group(0))
