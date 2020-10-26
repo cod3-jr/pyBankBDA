@@ -37,7 +37,7 @@ cat = {
     ,'ANYELA DE OUTERBRIDGE' : 'Household:Cleaning'
     ,'BERMUDA ENGINEERING COMPANY LIMITED' : 'Household:Solar Panels'
     ,'FREISENBRUCH MEYER' : 'Insurance:House'
-    ,'HSBC BANK OF BERMUDAPIPER GARDENS' : 'Maintenance Fee'
+    ,'HSBC BANK OF BERMUDA-PIPER GARDENS' : 'Maintenance Fee'
 
     # Medical
     ,'KERIN ORAL CARE' : 'Medical:Dentist'

@@ -1,21 +1,36 @@
+from argparse import FileType
 import re
-
+import argparse
 import pandas as pd
 
-from categories import cat
+from categories import cat # Categorization happens here
 
+# Argument Parsing
+parser = argparse.ArgumentParser()
+parser.add_argument('file', default='testFiles/Butterfield.csv',
+                    help="provide file to be parsed")
+parser.add_argument('-v','--verbose', action='store_true', default=False,
+                    help='Flag for printing details to the command line')
+parser.add_argument('--debug', action='store_true', default=False,
+                    help='Flag for debug printing to the command line')
+parser.add_argument('-sl','--skip', type=int, default=3,
+                    help='# of lines to skip before column headers. Butterfield has 3 lines before header')
+args = parser.parse_args()
+
+#Variables
 accountNum = 0
 accountName = currency = "blah"
 balanceOpen = balanceClose = 0.00
-filename = 'testFiles/Butterfield.csv'
-headerAt = 3
-isDebug = False
-isPrintDetails = False
+filename = args.file
+FileFrom = 'blah' # TODO: Parse file metadata to determine source
+headerAt = args.skip
+isDebug = args.debug
+isPrintDetails = args.verbose
 lineCount = 1
 
 print("\n--------------------\nhello world\n") if isDebug else None
 
-# Get Extract MetaData
+# Get CSV MetaData
 metadata = pd.read_csv(filename, nrows=3, header=None, skipinitialspace=True, encoding='utf-8')
 accountNum = metadata[0][0]
 accountName = metadata[1][0]
@@ -51,7 +66,9 @@ records['Amount'] = (records['Debit'] * -1.00).fillna(records['Credit'])
 # Categorize Records
 records['Category'] = records.Description.apply(lambda x: [v for k, v in cat.items() if re.search(k, x.upper())]).explode()
 
-# noExt = re.match(r'\S*(?=.csv)',filename)
+# Write output to file. First re.match() pulls single-word characters before .csv 2nd captures filetype
 records.to_csv( (re.match(r'\S*(?=.csv)',filename)).group(0) + '-output' + (re.search(r'\.\w+',filename)).group(0))
+
 # For printing to the command line
 print(records.sort_values(by=['Value Date'],ascending=False)) if isDebug or isPrintDetails else None
+print("{} Transactions Parsed".format(len(records.index))) if isPrintDetails else None
