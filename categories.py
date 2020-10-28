@@ -69,4 +69,5 @@ cat = {
     # Utilities
     ,'BELCO Bill|BELCO Payment|UM2' : 'Utilities:Electricity'
     ,'SIG POS TRANS (\d+) DIGICEL DING' : 'Utilities:Mobile Phone'
+    ,'COMMUNICATIONS' : {-149.55 : 'Utilities:Internet', -169.95 : 'Utilities:Internet', -84.95 : 'Utilities:Internet:Mom', -95.00 : 'Utilities:Internet:Mom'}
 }

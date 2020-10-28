@@ -3,11 +3,12 @@ import re
 import argparse
 import pandas as pd
 
+from collections.abc import Mapping
 from categories import cat # Categorization happens here
 
 # Argument Parsing
 parser = argparse.ArgumentParser()
-parser.add_argument('file', default='testFiles/Butterfield.csv',
+parser.add_argument('file',
                     help="provide file to be parsed")
 parser.add_argument('-v','--verbose', action='store_true', default=False,
                     help='Flag for printing details to the command line')
@@ -64,7 +65,27 @@ records.insert(loc=7, column='Amount', value=accountNum)
 records['Amount'] = (records['Debit'] * -1.00).fillna(records['Credit'])
 
 # Categorize Records
-records['Category'] = records.Description.apply(lambda x: [v for k, v in cat.items() if re.search(k, x.upper())]).explode()
+def categorize(description,amount):
+    # iterate through categories
+    for k, v in cat.items():
+        # if key patter matches description and value is a mapping
+        if re.search(k,description.upper()) and isinstance(v, Mapping):
+            # try to get category based on amount of transaction
+            try: 
+                return v[amount]
+            # except if the amount key is not found
+            except(KeyError):
+                None
+        # else if just check for key pattern match
+        elif re.search(k,description.upper()):
+            return v
+
+# apply on data frame, x = record, pass record's desctiption and amount to categorize
+records['Category'] = records.apply(lambda x: categorize(x['Description'],x['Amount']),axis=1)
+# old approach to categorization. Doesn't support considering two columns
+# records['Category'] = records.Description.apply(
+#     lambda x: [v for k, v in cat.items() if re.search(k, x.upper())]
+#     ).explode()
 
 # Write output to file. First re.match() pulls single-word characters before .csv 2nd captures filetype
 records.to_csv( (re.match(r'\S*(?=.csv)',filename)).group(0) + '-output' + (re.search(r'\.\w+',filename)).group(0))
