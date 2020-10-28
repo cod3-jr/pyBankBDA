@@ -3,8 +3,8 @@ import re
 import argparse
 import pandas as pd
 
+from categories import cat # Categorizations stored here
 from collections.abc import Mapping
-from categories import cat # Categorization happens here
 
 # Argument Parsing
 parser = argparse.ArgumentParser()
@@ -36,8 +36,8 @@ metadata = pd.read_csv(filename, nrows=3, header=None, skipinitialspace=True, en
 accountNum = metadata[0][0]
 accountName = metadata[1][0]
 currency = (re.search(r'([a-zA-Z]+)', metadata[1][1])).group(0) # get currency code from openening balance
-balanceOpen = (re.search(r'(\d+[,.]\d+)', metadata[1][1])).group(0) # Should get numbers even if Butterfield starts using ,
-balanceClose = (re.search(r'(\d+[,.]\d+)', metadata[1][2][4:])).group(0) 
+balanceOpen = float((re.search(r'(\d+[,.]\d+)', metadata[1][1])).group(0)) # Should get numbers even if Butterfield starts using ,
+balanceClose = float((re.search(r'(\d+[,.]\d+)', metadata[1][2][4:])).group(0)) 
 
 # For printing to the command line if isDebug or isPrintDetails
 print('\n\n-----------------------\n\nAccount Number:', accountNum, '\nAccount Name:', accountName, '\nCurrency:', currency, '\nOpening Balance:', balanceOpen, '\nClosing Balance:', balanceClose, '\n\n') if isDebug or isPrintDetails else None
@@ -65,7 +65,7 @@ records.insert(loc=7, column='Amount', value=accountNum)
 records['Amount'] = (records['Debit'] * -1.00).fillna(records['Credit'])
 
 # Categorize Records
-def categorize(description,amount):
+def categorize(description,amount): # TODO extend to consider card number
     # iterate through categories
     for k, v in cat.items():
         # if key patter matches description and value is a mapping
