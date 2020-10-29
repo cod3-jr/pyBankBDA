@@ -1,3 +1,6 @@
+#!/usr/local/Cellar/python/3.7.3
+# /usr/bin/env python3
+
 from argparse import FileType
 import re
 import argparse
