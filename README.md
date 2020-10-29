@@ -12,9 +12,11 @@ Will eventually extend it out to conduct budget tracking based on categorized tr
 (or just python3 period as MacOS ships with python 2.7 or something like that)
 
 Run Shell Script content:
-`for f in "$@"; do 
+```python
+for f in "$@"; do 
 	/usr/local/Cellar/python/3.7.3/bin/python3 /Users/mischafubler/Dropbox/Mischa/GIt/pyBankBDA/parse_CSV.py "$f"; 
-done`
+done
+```
 
 Screenshot:
 ![alt](https://github.com/cod3-jr/pyBankBDA/blob/dev/Automator%20Screenshot.png)
