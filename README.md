@@ -9,12 +9,13 @@ Currently Supports Butterfield Bank .CSV files
 Will eventually extend it out to conduct budget tracking based on categorized transactions.
 
 ## To run as Automator Script if you've installed python3 using hombrew 
-(or just python3 period as MacOS ships with python 2.7 or something like that)
+...or just python3 period as MacOS ships with python 2.7 or something like that
+Replace python3 path with path to your python3 install
 
 Run Shell Script content:
 ```python
 for f in "$@"; do 
-	/usr/local/Cellar/python/3.7.3/bin/python3 /Users/mischafubler/Dropbox/Mischa/GIt/pyBankBDA/parse_CSV.py "$f"; 
+	/usr/local/Cellar/python/3.7.3/bin/python3 [path to local repo]/pyBankBDA/parse_CSV.py "$f"; 
 done
 ```
 
