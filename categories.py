@@ -26,6 +26,7 @@ cat = {
     # C - D
     ,'ATM' : 'Cash'
     ,'BANDCAMP' : 'Dizzle'
+    ,'WIKIPEDIA': 'Donations'
 
     # Food
     ,'BURROWS LIGHTBOURN|SPIRITS|THE BIRDCAGE WARWICK|TWO ROCK WINE COMPANY|WINE' : 'Food:Alcohol'
@@ -35,15 +36,17 @@ cat = {
 
     ,' BAR| BISTRO|BULLI.SOCIAL|CAFE |CASABLANCA| DINNER|DEVIL\'S ISLE PEMBROKE|GENEROSAS|HOUSE OF INDIA|HARRY\'S|KITCHEN|MISAKI|MR CHICKEN|PICKLED ONION AND BREW|PIZZA HOUSE|PUB| RESTAUR|ROBIN HOOD HAMILTON| RUBY MURRYS|SARGASSO SEA|SPECIALITY INN LTD. SMITHS|SWIZZLE INN|TAKE FIVE LTD|THE LOREN|THE REEFS|VILLAGE PANTRY' : 'Food:Dining'
     
-    ,'BOUQUET GARNI|DROP IT DELIVERY|GROCERIES|LINDO\'S FAMILY FOODS|MARKET|MODERN MART|SHOPPING CENTRE|SUPERMART' : 'Food:Groceries'
+    ,'BOUQUET GARNI|DROP IT DELIVERY|GROCERIES|LINDO\'S FAMILY FOODS|MARKET|MODERN MART|SHOPPING CENTRE|SUPERMART|WADSON\'S' : 'Food:Groceries'
 
     # Household
     ,'GORHAM\'S|MASTERS' : 'Household'
     ,'SEARS HOMETOWN STORE' : 'Household:Appliances'
     ,'ANYELA DE OUTERBRIDGE' : 'Household:Cleaning'
     ,'CPR CELL PHONE REPAIR' : 'Household:Electronics'
-    ,'BERMUDA ZOOLGOICAL' : 'Household:Memberships'
+    ,'CONSPEC' : 'Household:Furniture'
+    ,'BERMUDA ZOOLGOICAL|MEMBERSHIP' : 'Household:Memberships'
     ,'BERMUDA ENGINEERING COMPANY LIMITED' : 'Household:Solar Panels'
+    ,'SETAPP' : 'Household:Software'
     ,'FREISENBRUCH MEYER' : 'Insurance:House'
     ,'HSBC BANK OF BERMUDA-PIPER GARDENS' : 'Maintenance Fee'
 
@@ -73,6 +76,7 @@ cat = {
     # Tax
     ,'FCPT ' : 'Tax'
     ,'BDA GOV-HM CUSTOMS-KSK' : 'Tax:Duty'
+    ,'OFFICE OF THE TAX COMM' : 'Tax:Land'
     
     ,' DEPOT|SIG POS TRANS (\d+) TEACHERSPAYTEACHERS' : 'Teaching' # If purchase in foreign currency need to include prefix
     ,'HAIR STUDIO' : 'Toiletries:Hair Care'

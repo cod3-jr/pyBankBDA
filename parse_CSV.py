@@ -25,6 +25,7 @@ args = parser.parse_args()
 accountNum = 0
 accountName = currency = "blah"
 balanceOpen = balanceClose = 0.00
+dateCols = ['Transaction Date', 'Value Date']
 filename = args.file
 FileFrom = 'blah' # TODO: Parse file metadata to determine source
 headerAt = args.skip
@@ -47,18 +48,18 @@ print('\n\n-----------------------\n\nAccount Number:', accountNum, '\nAccount N
 print(metadata[1:3],'\n\n-------------------\n') if isDebug else None
 
 # Get Transaction Records
-records = pd.read_csv(filename, header=headerAt, skipinitialspace=True, encoding='utf-8')
+records = pd.read_csv(filename, header=headerAt, skipinitialspace=True, encoding='utf-8', parse_dates=dateCols)
 
 # Prepend account Number
 records.insert(loc=0, column='Account', value=accountNum)
 
 # Which Card was used?
 records.insert(loc=1, column='Card', value=accountNum)
-records['Card'] = records.Description.apply(lambda x: (re.search(r'\d{4}', x)).group(0) if re.search(r'\d{4}', x) else None)
+records['Card'] = records.Description.apply(lambda x: (re.search(r'\d{4}', x)).group(0) if re.search(r'\d{4}', x) else pd.NA)
 
 # convert date formats
-records['Transaction Date'] = pd.to_datetime(records['Transaction Date'], format='%d %b %Y')
-records['Value Date'] = pd.to_datetime(records['Value Date'], format='%d %b %Y')
+# records['Transaction Date'] = pd.to_datetime(records['Transaction Date'], format='%d %b %Y')
+# records['Value Date'] = pd.to_datetime(records['Value Date'], format='%d %b %Y')
 
 # Add Amount Column 
 # My Budget app does support negative and positive value columns
@@ -71,7 +72,7 @@ records['Amount'] = (records['Debit'] * -1.00).fillna(records['Credit'])
 def categorize(description,amount): # TODO extend to consider card number
     # iterate through categories
     for k, v in cat.items():
-        # if key patter matches description and value is a mapping
+        # if key pattern matches description and value is a mapping
         if re.search(k,description.upper()) and isinstance(v, Mapping):
             # try to get category based on amount of transaction
             try: 
