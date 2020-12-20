@@ -5,6 +5,7 @@ from argparse import FileType
 import re
 import argparse
 import pandas as pd
+import subprocess
 
 from categories import cat # Categorizations stored here
 from collections.abc import Mapping
@@ -27,16 +28,20 @@ accountName = currency = "blah"
 balanceOpen = balanceClose = 0.00
 dateCols = ['Transaction Date', 'Value Date']
 filename = args.file
-FileFrom = 'blah' # TODO: Parse file metadata to determine source
+FileFrom = re.search(r'(?<=\.)\w+\.com|\w+\.bm', subprocess.Popen(["mdls", "-n","kMDItemWhereFroms", filename], stdout=subprocess.PIPE).communicate() [0].decode('utf-8')).group(0) 
 headerAt = args.skip
 isDebug = args.debug
 isPrintDetails = args.verbose
 lineCount = 1
 
-print("\n--------------------\nhello world\n") if isDebug else None
+print("\n--------------------\nFile From: ",FileFrom,"\nFilename: ", filename, "\n") if isDebug else None
 
 # Get CSV MetaData
-metadata = pd.read_csv(filename, nrows=3, header=None, skipinitialspace=True, encoding='utf-8')
+try: 
+    metadata = pd.read_csv(filename, nrows=3, header=None, skipinitialspace=True, encoding='utf-8')
+
+except IOError:
+    print('Problem reading: ' + filename)
 accountNum = metadata[0][0]
 accountName = metadata[1][0]
 currency = (re.search(r'([a-zA-Z]+)', metadata[1][1])).group(0) # get currency code from openening balance

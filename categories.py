@@ -26,6 +26,7 @@ cat = {
     # C - D
     ,'ATM' : 'Cash'
     ,'BANDCAMP' : 'Dizzle'
+    ,'LNRP YEAR SUBSCRIPTION' : 'Dizzle:Services'
     ,'WIKIPEDIA': 'Donations'
 
     # Food
@@ -38,6 +39,9 @@ cat = {
     
     ,'BOUQUET GARNI|DROP IT DELIVERY|GROCERIES|LINDO\'S FAMILY FOODS|MARKET|MODERN MART|SHOPPING CENTRE|SUPERMART|WADSON\'S' : 'Food:Groceries'
 
+    #Gifts
+    ,'DAVIDROSE LTD' : 'Gifts'
+
     # Household
     ,'GORHAM\'S|MASTERS' : 'Household'
     ,'SEARS HOMETOWN STORE' : 'Household:Appliances'
@@ -46,7 +50,7 @@ cat = {
     ,'CONSPEC' : 'Household:Furniture'
     ,'BERMUDA ZOOLGOICAL|MEMBERSHIP' : 'Household:Memberships'
     ,'BERMUDA ENGINEERING COMPANY LIMITED' : 'Household:Solar Panels'
-    ,'SETAPP' : 'Household:Software'
+    ,'SETAPP|1PASSWORD|PARALLELS' : 'Household:Software'
     ,'FREISENBRUCH MEYER' : 'Insurance:House'
     ,'HSBC BANK OF BERMUDA-PIPER GARDENS' : 'Maintenance Fee'
 
@@ -77,8 +81,10 @@ cat = {
     ,'FCPT ' : 'Tax'
     ,'BDA GOV-HM CUSTOMS-KSK' : 'Tax:Duty'
     ,'OFFICE OF THE TAX COMM' : 'Tax:Land'
+
+    #Teaching
     
-    ,' DEPOT|SIG POS TRANS (\d+) TEACHERSPAYTEACHERS' : 'Teaching' # If purchase in foreign currency need to include prefix
+    ,'SPELLCITY| DEPOT|SIG POS TRANS (\d+) TEACHERSPAYTEACHERS' : 'Teaching' # If purchase in foreign currency need to include prefix
     ,'HAIR STUDIO' : 'Toiletries:Hair Care'
     ,'ACNE CLINI' : 'Toiletries:Skin Care'
 
