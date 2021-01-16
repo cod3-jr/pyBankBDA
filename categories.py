@@ -1,4 +1,6 @@
-# Use | (or) to add description strings to a category
+'''
+# Use | (i.e. or regEx symbol) to add description strings to a category
+'''
 cat = {
     # Auto
     'CAR TINTING|CAR CARE|CAR WASH' : 'Auto'

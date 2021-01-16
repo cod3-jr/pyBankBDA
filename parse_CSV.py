@@ -1,14 +1,14 @@
-#!/usr/local/Cellar/python/3.7.3
-# /usr/bin/env python3
-
-from argparse import FileType
-import re
 import argparse
-import pandas as pd
+import categories
+# from argparse import FileType
+import os
+import re
 import subprocess
-
-from categories import cat # Categorizations stored here
 from collections.abc import Mapping
+
+import pandas as pd
+
+# from categories import cat  # Categorizations stored here
 
 # Argument Parsing
 parser = argparse.ArgumentParser()
@@ -24,22 +24,23 @@ args = parser.parse_args()
 
 #Variables
 accountNum = 0
-accountName = currency = "blah"
+accountName = currency = outFile = "blah"
 balanceOpen = balanceClose = 0.00
 dateCols = ['Transaction Date', 'Value Date']
 filename = args.file
 FileFrom = re.search(r'(?<=\.)\w+\.com|\w+\.bm', subprocess.Popen(["mdls", "-n","kMDItemWhereFroms", filename], stdout=subprocess.PIPE).communicate() [0].decode('utf-8')).group(0) 
 headerAt = args.skip
+includeHeaders = True
 isDebug = args.debug
 isPrintDetails = args.verbose
 lineCount = 1
+outMode = 'w'
 
 print("\n--------------------\nFile From: ",FileFrom,"\nFilename: ", filename, "\n") if isDebug else None
 
 # Get CSV MetaData
 try: 
     metadata = pd.read_csv(filename, nrows=3, header=None, skipinitialspace=True, encoding='utf-8')
-
 except IOError:
     print('Problem reading: ' + filename)
 accountNum = metadata[0][0]
@@ -66,17 +67,23 @@ records['Card'] = records.Description.apply(lambda x: (re.search(r'\d{4}', x)).g
 # records['Transaction Date'] = pd.to_datetime(records['Transaction Date'], format='%d %b %Y')
 # records['Value Date'] = pd.to_datetime(records['Value Date'], format='%d %b %Y')
 
-# Add Amount Column 
-# My Budget app does support negative and positive value columns
-# But Butterfield records refunds as negative debits
+
+'''
+# Add Amount Column
 # Sets Amount = Debit * -1 unless it's NaN, then it sets Credit
+
+# My Budget app treats its negative and positive value columns like unsigned integers
+# i.e. -1 and 1 both decrease the account balance as an expense.
+# Butterfield records refund transactions as negative values in the debit column
+
+'''
 records.insert(loc=7, column='Amount', value=accountNum)
 records['Amount'] = (records['Debit'] * -1.00).fillna(records['Credit'])
 
 # Categorize Records
 def categorize(description,amount): # TODO extend to consider card number
     # iterate through categories
-    for k, v in cat.items():
+    for k, v in categories.cat.items():
         # if key pattern matches description and value is a mapping
         if re.search(k,description.upper()) and isinstance(v, Mapping):
             # try to get category based on amount of transaction
@@ -96,9 +103,19 @@ records['Category'] = records.apply(lambda x: categorize(x['Description'],x['Amo
 #     lambda x: [v for k, v in cat.items() if re.search(k, x.upper())]
 #     ).explode()
 
-# Write output to file. First re.match() pulls single-word characters before .csv 2nd captures filetype
-records.to_csv( (re.match(r'\S*(?=.csv)',filename)).group(0) + '-output' + (re.search(r'\.\w+',filename)).group(0))
+'''
+# Write df to file. 
+# First re.match() pulls single-word characters before .csv file extenstion
+# Second re.search() captures file extension
+# If output file exists, write mode = append, else mode = write
+'''
+outFile = (re.match(r'\S*(?=.csv)',filename)).group(0) + '-output' + (re.search(r'\.\w+',filename)).group(0)
+if os.path.isfile(outFile):
+    outMode = 'a'
+    includeHeaders = False
+
+records.to_csv(outFile, header= includeHeaders, index= False, mode= outMode)
 
 # For printing to the command line
 print(records.sort_values(by=['Value Date'],ascending=False)) if isDebug or isPrintDetails else None
-print("{} Transactions Parsed".format(len(records.index))) if isPrintDetails else None
+print("{} Transactions Parsed".format(len(records.index))) if isDebug or isPrintDetails else None
