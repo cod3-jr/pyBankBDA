@@ -4,16 +4,13 @@
 from argparse import FileType
 import re
 import argparse
-import categories
-# from argparse import FileType
+import categories # Categorizations stored here
 import os
 import re
 import subprocess
 from collections.abc import Mapping
 
 import pandas as pd
-
-# from categories import cat  # Categorizations stored here
 
 # Argument Parsing
 parser = argparse.ArgumentParser()
@@ -29,11 +26,11 @@ args = parser.parse_args()
 
 #Variables
 accountNum = 0
-accountName = currency = outFile = "blah"
+accountName = currency = outFile = FileFrom = "blah"
 balanceOpen = balanceClose = 0.00
 dateCols = ['Transaction Date', 'Value Date']
 filename = args.file
-FileFrom = re.search(r'(?<=\.)\w+\.com|\w+\.bm', subprocess.Popen(["mdls", "-n","kMDItemWhereFroms", filename], stdout=subprocess.PIPE).communicate() [0].decode('utf-8')).group(0) 
+# FileFrom = re.search(r'(?<=\.)\w+\.com|\w+\.bm', subprocess.Popen(["mdls", "-n","kMDItemWhereFroms", filename], stdout=subprocess.PIPE).communicate() [0].decode('utf-8')).group(0) 
 headerAt = args.skip
 includeHeaders = True
 isDebug = args.debug
@@ -41,13 +38,20 @@ isPrintDetails = args.verbose
 lineCount = 1
 outMode = 'w'
 
-print("\n--------------------\nFile From: ",FileFrom,"\nFilename: ", filename, "\n") if isDebug else None
 
 # Get CSV MetaData
 try: 
     metadata = pd.read_csv(filename, nrows=3, header=None, skipinitialspace=True, encoding='utf-8')
 except IOError:
     print('Problem reading: ' + filename)
+    metadata[0][0] = "0000"
+    metadata[1][0] = "file read error"
+
+try:
+    FileFrom = re.search(r'(?<=\.)\w+\.com|\w+\.bm', subprocess.Popen(["mdls", "-n","kMDItemWhereFroms", filename], stdout=subprocess.PIPE).communicate() [0].decode('utf-8')).group(0) 
+except AttributeError:
+    FileFrom = "unknown origin"
+    
 accountNum = metadata[0][0]
 accountName = metadata[1][0]
 currency = (re.search(r'([a-zA-Z]+)', metadata[1][1])).group(0) # get currency code from openening balance
@@ -55,6 +59,7 @@ balanceOpen = float((re.search(r'(\d+[,.]\d+)', metadata[1][1])).group(0)) # Sho
 balanceClose = float((re.search(r'(\d+[,.]\d+)', metadata[1][2][4:])).group(0)) 
 
 # For printing to the command line if isDebug or isPrintDetails
+print("\n--------------------\nFile From: ",FileFrom,"\nFilename: ", filename, "\n") if isDebug else None
 print('\n\n-----------------------\n\nAccount Number:', accountNum, '\nAccount Name:', accountName, '\nCurrency:', currency, '\nOpening Balance:', balanceOpen, '\nClosing Balance:', balanceClose, '\n\n') if isDebug or isPrintDetails else None
 print(metadata[1:3],'\n\n-------------------\n') if isDebug else None
 
